@@ -11,41 +11,38 @@ import {
 import { CreateTaskDto } from './dto/create-task-dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { PatchTaskDto } from './dto/patch-task-dto';
-import { Task } from './task.model';
 import { TasksService } from './tasks.service';
+import { Task as TaskModel } from '@prisma/client';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  getTasks(@Query() filterDto: GetTasksFilterDto): Task[] {
-    if (Object.keys(filterDto).length) {
-      return this.tasksService.getTasksWithFilters(filterDto);
-    }
-    return this.tasksService.getAllTasks();
+  getTasks(@Query() filterDto: GetTasksFilterDto): Promise<TaskModel[]> {
+    return this.tasksService.getTasks(filterDto);
   }
 
   @Get('/:id')
-  getTaskById(@Param('id') id: string): Task {
-    return this.tasksService.getTaskById(id);
+  getTaskById(@Param('id') id: string): Promise<TaskModel> {
+    return this.tasksService.getTaskById({ id });
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Task {
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskModel> {
     return this.tasksService.createTask(createTaskDto);
   }
 
   @Delete('/:id')
-  deleteTaskById(@Param('id') id: string) {
-    this.tasksService.deleteTaskById(id);
+  deleteTaskById(@Param('id') id: string): Promise<TaskModel> {
+    return this.tasksService.deleteTaskById({ id });
   }
 
   @Patch('/:id')
   updateTaskStatus(
     @Param('id') id: string,
     @Body() patchTaskDto: PatchTaskDto,
-  ): Task {
-    return this.tasksService.updateTask(id, patchTaskDto);
+  ): Promise<TaskModel> {
+    return this.tasksService.updateTask({ where: { id }, data: patchTaskDto });
   }
 }
