@@ -4,7 +4,7 @@ import { PatchTaskDto } from './dto/patch-task-dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, Task } from '@prisma/client';
-import { TaskStatus } from './task-status.enum';
+import { TaskStatus } from './types';
 
 @Injectable()
 export class TasksService {

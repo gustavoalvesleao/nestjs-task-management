@@ -1,5 +1,5 @@
 import { IsOptional, IsNotEmpty, IsEnum } from 'class-validator';
-import { TaskStatus } from '../task-status.enum';
+import { TaskStatus } from '../types';
 
 export class PatchTaskDto {
   @IsOptional()
