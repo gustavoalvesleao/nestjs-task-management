@@ -17,8 +17,8 @@ import { jwtConstants } from './constants';
       },
     }),
   ],
-  providers: [AuthService, PrismaService, AccessTokenStrategy],
+  providers: [AuthService, PrismaService, AccessTokenStrategy], // Will be injected as dependencies in this module
   controllers: [AuthController],
-  exports: [AccessTokenStrategy, PassportModule],
+  exports: [AccessTokenStrategy, PassportModule], // Exports for instance the AuthService, in case a different module wants to use it
 })
 export class AuthModule {}

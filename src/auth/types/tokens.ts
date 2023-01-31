@@ -5,4 +5,5 @@ export interface Tokens {
 
 export interface JwtPayload {
   username: string;
+  id: string;
 }

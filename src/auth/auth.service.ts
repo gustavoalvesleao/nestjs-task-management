@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -28,7 +29,7 @@ export class AuthService {
       });
 
     if (user) {
-      return this.getTokens({ username: user.username });
+      return this.getTokens({ username: user.username, id: user.id });
     }
   }
 
@@ -39,11 +40,15 @@ export class AuthService {
       where: { username },
     });
 
-    if (user && (await this.passwordMatches(password, user.password))) {
-      return this.getTokens({ username });
+    if (!user) {
+      throw new NotFoundException('This user does not exist');
     }
 
-    throw new UnauthorizedException('Please check your login credentials');
+    if (await this.passwordMatches(password, user.password)) {
+      return this.getTokens({ username, id: user.id });
+    }
+
+    throw new UnauthorizedException('Your password does not match');
   }
 
   private handleUserError(
